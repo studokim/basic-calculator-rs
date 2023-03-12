@@ -52,13 +52,16 @@ fn parse_expr(expr: Expr, rem: Vec<(char, Expr)>) -> Expr {
 }
 
 fn parse_op(tup: (char, Expr), expr1: Expr) -> Expr {
+    use crate::types::Binop::*;
     let (op, expr2) = tup;
+    let left = Box::new(expr1);
+    let right = Box::new(expr2);
     match op {
-        '+' => EAdd(Box::new(expr1), Box::new(expr2)),
-        '-' => ESub(Box::new(expr1), Box::new(expr2)),
-        '*' => EMul(Box::new(expr1), Box::new(expr2)),
-        '/' => EDiv(Box::new(expr1), Box::new(expr2)),
-        '^' => EExp(Box::new(expr1), Box::new(expr2)),
+        '+' => EBinop(left, EAdd, right),
+        '-' => EBinop(left, ESub, right),
+        '*' => EBinop(left, EMul, right),
+        '/' => EBinop(left, EDiv, right),
+        '^' => EBinop(left, EExp, right),
         _ => panic!("Unknown Operation"),
     }
 }
